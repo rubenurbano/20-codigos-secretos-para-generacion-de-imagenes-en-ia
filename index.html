@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>20 Códigos Secretos para Generación de Imágenes en IA</title>
+<meta name="description" content="Manual de prompts modificadores para ChatGPT (DALL·E 3) y Gemini (Imagen 3): 20 códigos secretos para generación de imágenes con IA.">
+<style>
+  /* ---------- TEMA ---------- */
+  :root{
+    --bg:#080b14;
+    --text:#e8ecf5;
+    --muted:#93a0b8;
+    --card:rgba(255,255,255,.045);
+    --card-hover:rgba(255,255,255,.078);
+    --border:rgba(255,255,255,.09);
+    --accent:#a78bfa;
+    --accent2:#22d3ee;
+    --chip:#141b2b;
+    --nav-bg:rgba(8,11,20,.78);
+    --drawer-bg:#0c111e;
+    --code-bg:rgba(139,92,246,.12);
+    --code-border:rgba(139,92,246,.26);
+    --thead:rgba(255,255,255,.03);
+    --glow1:rgba(139,92,246,.30);
+    --glow2:rgba(6,182,212,.20);
+    --shadow:0 20px 45px -22px rgba(0,0,0,.75);
+    --chip-active:#2a1f5c;
+    color-scheme:dark;
+  }
+  [data-theme="light"]{
+    --bg:#f5f6fb;
+    --text:#0f172a;
+    --muted:#5b6478;
+    --card:#ffffff;
+    --card-hover:#ffffff;
+    --border:rgba(15,23,42,.10);
+    --accent:#7c3aed;
+    --accent2:#0891b2;
+    --chip:#ffffff;
+    --nav-bg:rgba(245,246,251,.82);
+    --drawer-bg:#ffffff;
+    --code-bg:rgba(124,58,237,.07);
+    --code-border:rgba(124,58,237,.20);
+    --thead:rgba(15,23,42,.03);
+    --glow1:rgba(124,58,237,.14);
+    --glow2:rgba(8,145,178,.10);
+    --shadow:0 18px 40px -22px rgba(15,23,42,.30);
+    --chip-active:#ede9fe;
+    color-scheme:light;
+  }
+
+  /* ---------- BASE ---------- */
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    transition:background .35s ease,color .35s ease;
+  }
+  body::before{
+    content:"";
+    position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(900px 520px at 8% -8%, var(--glow1), transparent 62%),
+      radial-gradient(820px 500px at 100% 0%, var(--glow2), transparent 62%);
+  }
+  ::selection{background:var(--accent);color:#fff}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+  .container{max-width:1160px;margin:0 auto;padding:0 24px}
+  section[id],header[id]{scroll-margin-top:92px}
+  body.no-scroll{overflow:hidden}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:74px 0 26px;text-align:center}
+  .badge{
+    display:inline-block;padding:6px 15px;border-radius:999px;
+    border:1px solid var(--border);background:var(--card);
+    font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;margin-bottom:22px;
+  }
+  .hero h1{
+    font-size:clamp(2rem,5vw,3.5rem);
+    line-height:1.08;letter-spacing:-.035em;font-weight:800;
+  }
+  .grad{
+    background:linear-gradient(92deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero .sub{color:var(--muted);margin-top:16px;font-size:1.02rem}
+  .hero .count{
+    display:inline-flex;align-items:center;gap:8px;margin-top:22px;
+    font-size:.82rem;color:var(--muted);font-weight:600;letter-spacing:.04em;
+  }
+  .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 12px var(--accent)}
+
+  /* ---------- CÓMO FUNCIONA ---------- */
+  .how{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:30px;
+    margin:26px 0 46px;
+    box-shadow:var(--shadow);
+  }
+  .how h2{font-size:1.28rem;letter-spacing:-.02em;margin-bottom:12px}
+  .how p{color:var(--muted);font-size:.97rem;max-width:78ch}
+  .formula-strip{
+    margin-top:20px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;
+    padding:14px 16px;border-radius:14px;
+    background:var(--code-bg);border:1px solid var(--code-border);
+  }
+  .formula-strip .fs-label{
+    font-size:.66rem;text-transform:uppercase;letter-spacing:.14em;
+    font-weight:800;color:var(--accent);
+  }
+  .formula-strip code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.85rem;color:var(--text);
+  }
+
+  /* ---------- TOOLBAR ---------- */
+  .toolbar{
+    position:sticky;top:0;z-index:60;
+    background:var(--nav-bg);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--border);
+  }
+  .toolbar-inner{
+    max-width:1160px;margin:0 auto;padding:12px 24px;
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  }
+
+  /* ---------- HAMBURGUESA ---------- */
+  .burger{
+    flex:0 0 auto;width:42px;height:42px;border-radius:12px;cursor:pointer;
+    border:1px solid var(--border);background:var(--chip);color:var(--text);
+    display:grid;place-content:center;gap:5px;
+    transition:transform .2s,border-color .2s,background .2s;
+  }
+  .burger span{
+    display:block;width:19px;height:2px;border-radius:2px;
+    background:currentColor;transition:transform .28s ease,opacity .2s ease;
+  }
+  .burger:hover{transform:translateY(-1px);border-color:var(--accent);color:var(--accent)}
+  .burger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+  .burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+  .search{position:relative;flex:1 1 220px;max-width:340px}
+  .search svg{
+    position:absolute;left:13px;top:50%;transform:translateY(-50%);
+    width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;
+  }
+  .search input{
+    width:100%;padding:10px 14px 10px 38px;border-radius:12px;
+    border:1px solid var(--border);background:var(--chip);
+    color:var(--text);font:inherit;font-size:.88rem;outline:none;
+    transition:border-color .2s,box-shadow .2s;
+  }
+  .search input::placeholder{color:var(--muted)}
+  .search input:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+  .chips{display:flex;gap:8px;flex:1 1 auto;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{
+    flex:0 0 auto;padding:8px 15px;border-radius:999px;cursor:pointer;
+    border:1px solid var(--border);background:var(--chip);
+    color:var(--muted);font:inherit;font-size:.82rem;font-weight:600;
+    transition:all .2s ease;white-space:nowrap;
+  }
+  .chip:hover{color:var(--text);border-color:var(--accent)}
+  .chip.active{
+    background:var(--chip-active);color:var(--text);
+    border-color:var(--accent);
+    box-shadow:0 0 0 1px var(--accent) inset;
+  }
+  .theme-btn{
+    flex:0 0 auto;width:42px;height:42px;border-radius:12px;cursor:pointer;
+    border:1px solid var(--border);background:var(--chip);
+    font-size:1rem;line-height:1;display:grid;place-items:center;
+    transition:transform .2s,border-color .2s;
+  }
+  .theme-btn:hover{transform:translateY(-1px);border-color:var(--accent)}
+
+  /* ---------- DRAWER (MENÚ HAMBURGUESA) ---------- */
+  .overlay{
+    position:fixed;inset:0;z-index:190;
+    background:rgba(2,4,10,.62);
+    backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+    opacity:0;pointer-events:none;
+    transition:opacity .3s ease;
+  }
+  .overlay.show{opacity:1;pointer-events:auto}
+
+  .drawer{
+    position:fixed;top:0;left:0;z-index:200;
+    height:100dvh;width:min(352px,88vw);
+    display:flex;flex-direction:column;
+    background:var(--drawer-bg);
+    border-right:1px solid var(--border);
+    box-shadow:24px 0 60px -30px rgba(0,0,0,.8);
+    transform:translateX(-102%);
+    visibility:hidden;
+    transition:transform .34s cubic-bezier(.4,0,.2,1), visibility 0s .34s;
+    overflow-y:auto;overscroll-behavior:contain;
+  }
+  .drawer.open{
+    transform:translateX(0);
+    visibility:visible;
+    transition:transform .34s cubic-bezier(.4,0,.2,1), visibility 0s 0s;
+  }
+  .drawer-head{
+    position:sticky;top:0;z-index:2;
+    display:flex;align-items:flex-start;justify-content:space-between;gap:14px;
+    padding:22px 20px 16px;
+    background:var(--drawer-bg);
+    border-bottom:1px solid var(--border);
+  }
+  .drawer-kicker{
+    font-size:.64rem;text-transform:uppercase;letter-spacing:.18em;
+    font-weight:800;color:var(--accent);margin-bottom:4px;
+  }
+  .drawer-title{font-size:1.05rem;font-weight:800;letter-spacing:-.02em;line-height:1.2}
+  .drawer-close{
+    flex:0 0 auto;width:34px;height:34px;border-radius:10px;cursor:pointer;
+    border:1px solid var(--border);background:var(--chip);color:var(--muted);
+    font-size:.85rem;line-height:1;display:grid;place-items:center;
+    transition:color .2s,border-color .2s,transform .2s;
+  }
+  .drawer-close:hover{color:var(--text);border-color:var(--accent);transform:rotate(90deg)}
+
+  .drawer-nav{padding:16px 14px 8px;display:flex;flex-direction:column;gap:20px}
+  .nav-label{
+    font-size:.62rem;text-transform:uppercase;letter-spacing:.18em;
+    font-weight:800;color:var(--muted);
+    padding:0 12px;margin-bottom:8px;
+  }
+  .nav-link{
+    display:flex;align-items:center;gap:12px;
+    padding:10px 12px;border-radius:12px;
+    text-decoration:none;color:var(--muted);
+    font-size:.88rem;font-weight:600;line-height:1.35;
+    border:1px solid transparent;
+    transition:background .2s,color .2s,border-color .2s,transform .2s;
+  }
+  .nav-link:hover{background:var(--card-hover);color:var(--text);transform:translateX(2px)}
+  .nav-link.active{
+    background:var(--chip-active);color:var(--text);
+    border-color:var(--accent);
+    box-shadow:0 0 0 1px var(--accent) inset;
+  }
+  .nn{
+    flex:0 0 auto;width:28px;height:28px;border-radius:9px;
+    display:grid;place-items:center;
+    font-size:.68rem;font-weight:800;color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    letter-spacing:0;
+  }
+  .nn.ghost{
+    background:var(--chip);color:var(--accent);
+    border:1px solid var(--border);
+  }
+  .drawer-foot{
+    margin-top:auto;padding:18px 26px 26px;
+    border-top:1px solid var(--border);
+    font-size:.72rem;color:var(--muted);line-height:1.5;
+  }
+
+  /* ---------- CATEGORÍAS ---------- */
+  main{padding-bottom:70px}
+  .cat{margin-top:52px}
+  .cat-head{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+  .cat-num{
+    font-size:.85rem;font-weight:800;letter-spacing:.04em;
+    width:46px;height:46px;flex:0 0 auto;border-radius:14px;
+    display:grid;place-items:center;color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 8px 22px -10px var(--accent);
+  }
+  .cat-kicker{
+    font-size:.68rem;text-transform:uppercase;letter-spacing:.16em;
+    font-weight:800;color:var(--accent);margin-bottom:2px;
+  }
+  .cat-head h2{font-size:clamp(1.15rem,2.4vw,1.55rem);letter-spacing:-.025em;line-height:1.2}
+
+  /* ---------- GRID / TARJETAS ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(305px,1fr));gap:20px}
+  .card{
+    position:relative;display:flex;flex-direction:column;gap:14px;
+    background:var(--card);border:1px solid var(--border);
+    border-radius:20px;padding:24px 22px 22px;overflow:hidden;
+    transition:transform .25s ease,background .25s ease,border-color .25s ease,box-shadow .25s ease;
+  }
+  .card::before{
+    content:"";position:absolute;inset:0 0 auto 0;height:3px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    opacity:.85;
+  }
+  .card:hover{
+    transform:translateY(-4px);
+    background:var(--card-hover);
+    border-color:color-mix(in srgb, var(--accent) 45%, var(--border));
+    box-shadow:var(--shadow);
+  }
+  .card-top{display:flex;align-items:center;gap:12px}
+  .num{
+    flex:0 0 auto;font-size:.72rem;font-weight:800;letter-spacing:.04em;
+    padding:5px 10px;border-radius:9px;color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+  }
+  .card h3{font-size:1.1rem;font-weight:700;letter-spacing:-.015em;line-height:1.25}
+  .efecto{color:var(--muted);font-size:.93rem}
+  .label{
+    display:block;font-size:.65rem;text-transform:uppercase;
+    letter-spacing:.14em;font-weight:800;color:var(--muted);
+    margin-bottom:5px;
+  }
+  .formula{
+    display:block;padding:10px 13px;border-radius:11px;
+    background:var(--code-bg);border:1px solid var(--code-border);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.79rem;line-height:1.5;color:var(--text);word-break:break-word;
+  }
+  .ejemplo{
+    font-size:.9rem;font-style:italic;color:var(--text);
+    border-left:3px solid var(--accent2);
+    padding:2px 0 2px 13px;
+  }
+  .aplica{font-size:.85rem;color:var(--muted);margin-top:auto}
+  .aplica .label{margin-bottom:2px}
+
+  /* ---------- EMPTY ---------- */
+  .empty{
+    text-align:center;padding:70px 20px;color:var(--muted);
+    border:1px dashed var(--border);border-radius:20px;margin-top:40px;
+  }
+  .empty strong{display:block;color:var(--text);font-size:1.05rem;margin-bottom:6px}
+  .hidden{display:none !important}
+
+  /* ---------- TABLA ---------- */
+  .ref{margin-top:76px}
+  .ref-head{margin-bottom:22px}
+  .ref-head h2{font-size:clamp(1.15rem,2.4vw,1.5rem);letter-spacing:-.025em;line-height:1.25}
+  .table-wrap{
+    overflow-x:auto;border-radius:18px;border:1px solid var(--border);
+    background:var(--card);box-shadow:var(--shadow);
+  }
+  table{width:100%;border-collapse:collapse;min-width:820px}
+  thead th{
+    text-align:left;padding:16px 20px;
+    font-size:.66rem;text-transform:uppercase;letter-spacing:.14em;
+    color:var(--muted);font-weight:800;
+    border-bottom:1px solid var(--border);background:var(--thead);
+    white-space:nowrap;
+  }
+  tbody td{padding:15px 20px;border-bottom:1px solid var(--border);vertical-align:top;font-size:.88rem}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr{transition:background .18s ease}
+  tbody tr:hover{background:var(--card-hover)}
+  .tnum{font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tcode{font-weight:700;white-space:nowrap}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--border);
+    padding:34px 24px 44px;text-align:center;color:var(--muted);font-size:.83rem;
+  }
+  footer strong{color:var(--text)}
+
+  /* ---------- BOTÓN TOP ---------- */
+  #toTop{
+    position:fixed;right:22px;bottom:22px;z-index:80;
+    width:46px;height:46px;border-radius:50%;cursor:pointer;
+    border:1px solid var(--border);background:var(--chip);color:var(--text);
+    font-size:1.1rem;display:grid;place-items:center;
+    opacity:0;pointer-events:none;transform:translateY(12px);
+    transition:all .25s ease;box-shadow:var(--shadow);
+  }
+  #toTop.show{opacity:1;pointer-events:auto;transform:translateY(0)}
+  #toTop:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:720px){
+    .hero{padding:52px 0 20px}
+    .how{padding:24px 20px;border-radius:18px}
+    .toolbar-inner{padding:10px 16px;gap:10px}
+    .search{flex:1 1 auto;max-width:none;order:1}
+    .chips{order:3;width:100%}
+    .theme-btn{order:2}
+    .burger{order:0}
+    .cat{margin-top:40px}
+    .cat-num{width:40px;height:40px;border-radius:12px;font-size:.78rem}
+    .card{padding:20px 18px}
+    .nav-link{font-size:.85rem}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{transition-duration:.01ms !important;animation-duration:.01ms !important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= OVERLAY ================= -->
+<div class="overlay" id="overlay"></div>
+
+<!-- ================= DRAWER / MENÚ HAMBURGUESA ================= -->
+<aside class="drawer" id="drawer" aria-label="Navegación del tutorial" aria-hidden="true">
+  <div class="drawer-head">
+    <div>
+      <div class="drawer-kicker">Índice</div>
+      <div class="drawer-title">20 Códigos Secretos</div>
+    </div>
+    <button class="drawer-close" id="drawerClose" aria-label="Cerrar menú">✕</button>
+  </div>
+
+  <nav class="drawer-nav">
+    <div class="nav-group">
+      <div class="nav-label">Guía</div>
+      <a class="nav-link" href="#inicio"><span class="nn ghost">✦</span>Inicio</a>
+      <a class="nav-link" href="#como-funciona"><span class="nn ghost">?</span>¿Cómo funcionan?</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Categorías</div>
+      <a class="nav-link" href="#cat-1"><span class="nn">01</span>Escalas y perspectivas extremas</a>
+      <a class="nav-link" href="#cat-2"><span class="nn">02</span>Transformaciones de materia y estructura</a>
+      <a class="nav-link" href="#cat-3"><span class="nn">03</span>Portales, espejos y dimensiones paralelas</a>
+      <a class="nav-link" href="#cat-4"><span class="nn">04</span>Tiempo, clima y presentación de producto</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Extra</div>
+      <a class="nav-link" href="#referencia"><span class="nn ghost">≡</span>Tabla de referencia rápida</a>
+    </div>
+  </nav>
+
+  <div class="drawer-foot">
+    Manual de prompts modificadores para ChatGPT (DALL·E 3) y Gemini (Imagen 3).
+  </div>
+</aside>
+
+<!-- ================= HERO ================= -->
+<header class="hero container" id="inicio">
+  <div class="badge">Guía práctica y de referencia rápida · IA Generativa</div>
+  <h1>20 Códigos Secretos <span class="grad">para Generación de Imágenes en IA</span></h1>
+  <p class="sub">Manual de prompts modificadores para ChatGPT (DALL·E 3) y Gemini (Imagen 3)</p>
+  <div class="count"><span class="dot"></span> 20 modificadores · 4 categorías · 1 tabla de referencia</div>
+</header>
+
+<!-- ================= TOOLBAR ================= -->
+<div class="toolbar" role="navigation" aria-label="Herramientas de navegación">
+  <div class="toolbar-inner">
+    <button class="burger" id="burger" aria-label="Abrir menú de navegación" aria-controls="drawer" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <div class="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.2-3.2"></path></svg>
+      <input id="q" type="search" placeholder="Buscar código, efecto, uso…" aria-label="Buscar en el tutorial" autocomplete="off">
+    </div>
+
+    <div class="chips" role="group" aria-label="Filtrar por categoría">
+      <button class="chip active" data-cat="all">Todos</button>
+      <button class="chip" data-cat="1">Escalas</button>
+      <button class="chip" data-cat="2">Materia</button>
+      <button class="chip" data-cat="3">Portales</button>
+      <button class="chip" data-cat="4">Tiempo</button>
+    </div>
+
+    <button class="theme-btn" id="theme" aria-label="Cambiar tema claro u oscuro">🌙</button>
+  </div>
+</div>
+
+<!-- ================= CONTENIDO ================= -->
+<main class="container">
+
+  <section class="how" id="como-funciona">
+    <h2>¿Cómo funcionan estos códigos secretos?</h2>
+    <p>Estos modificadores actúan como 'disparadores de estilo' que reconfiguran el motor visual de la inteligencia artificial. Para aplicarlos correctamente, añade la palabra clave o frase en inglés/español al inicio o dentro de tu prompt, acompañada de la imagen base o la descripción del sujeto.</p>
+    <div class="formula-strip">
+      <span class="fs-label">Fórmula general</span>
+      <code>[Código secreto] + [Sujeto / Foto de origen] + [Detalles de la escena]</code>
+    </div>
+  </section>
+
+  <!-- Contenido generado por JS -->
+  <div id="content"></div>
+
+  <!-- Mensaje sin resultados -->
+  <div id="empty" class="empty hidden">
+    <strong>Sin resultados</strong>
+    Prueba con otro término de búsqueda o selecciona otra categoría.
+  </div>
+
+  <!-- ================= TABLA DE REFERENCIA ================= -->
+  <section class="ref" id="referencia">
+    <div class="ref-head">
+      <div class="cat-kicker">Resumen</div>
+      <h2>Tabla de Referencia Rápida – Los 20 Códigos Secretos</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Código Secreto</th>
+            <th scope="col">Efecto Principal</th>
+            <th scope="col">Aplicación Clave</th>
+          </tr>
+        </thead>
+        <tbody id="ref-body"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p><strong>20 Códigos Secretos para Generación de Imágenes en IA</strong> · Manual de prompts modificadores para ChatGPT (DALL·E 3) y Gemini (Imagen 3)</p>
+</footer>
+
+<button id="toTop" aria-label="Volver arriba">↑</button>
+
+<script>
+/* ============================================================
+   1. DATOS (100 % del contenido del manual)
+   ============================================================ */
+const DATA = [
+  /* ---------- CATEGORÍA 1: ESCALAS Y PERSPECTIVAS EXTREMAS ---------- */
+  {
+    n:1, cat:1, code:"Miniature World",
+    efecto:"Transforma una fotografía en un mundo en miniatura con apariencia de maqueta hiperrealista.",
+    formula:"Miniature World + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Miniature World: transforma esta escena urbana en una maqueta en miniatura tilt-shift extremadamente detallada.",
+    aplica:"Fotografía urbana, paisajes, arquitectura y fotos de viajes."
+  },
+  {
+    n:2, cat:1, code:"Giant Product",
+    efecto:"Muestra un objeto o producto en tamaño gigante en medio de una ciudad de manera realista.",
+    formula:"Giant Product + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Giant Product: coloca una lata de refresco gigante en medio de una avenida principal de la ciudad, con edificios alrededor.",
+    aplica:"Marketing de productos, e-commerce, publicidad impactante."
+  },
+  {
+    n:3, cat:1, code:"Inside Out Room",
+    efecto:"Despliega una habitación mostrando sus capas e interiores desde una perspectiva abierta en corte transversal.",
+    formula:"Inside Out Room + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Inside Out Room: muestra esta habitación moderna abierta por la mitad, dejando ver la estructura interna de sus paredes y pisos.",
+    aplica:"Diseño de interiores, arquitectura, renders de producto."
+  },
+  {
+    n:4, cat:1, code:"Museum Diorama",
+    efecto:"Convierte cualquier fotografía en una exposición o diorama de museo hiperrealista en miniatura dentro de una vitrina.",
+    formula:"Museum Diorama + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Museum Diorama: transforma esta imagen de selva en una exhibición en miniatura dentro de una vitrina de cristal de museo.",
+    aplica:"Proyectos artísticos, storytelling visual, fotografía de viajes."
+  },
+  {
+    n:5, cat:1, code:"Tiny Workers",
+    efecto:"Añade multitud de pequeños trabajadores en miniatura construyendo, limpiando o reparando un producto a gran escala.",
+    formula:"Tiny Workers + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Tiny Workers: añade decenas de pequeños obreros en miniatura con cascos amarillos reparando y limpiando un reloj de pulsera gigante.",
+    aplica:"Publicidad creativa de productos, marcas, contenido viral."
+  },
+
+  /* ---------- CATEGORÍA 2: TRANSFORMACIONES DE MATERIA Y ESTRUCTURA ---------- */
+  {
+    n:6, cat:2, code:"Liquid Metal",
+    efecto:"Convierte a cualquier persona u objeto en metal líquido al estilo de una escena de ciencia ficción futurista.",
+    formula:"Liquid Metal + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Liquid Metal: transforma al sujeto de esta imagen en una figura de metal líquido brillante con reflejos plateados.",
+    aplica:"Retratos de ciencia ficción, portadas artísticas, renders futuristas."
+  },
+  {
+    n:7, cat:2, code:"Neon Blueprint",
+    efecto:"Transforma la mitad de un objeto en un plano técnico futurista trazado con líneas de neón brillante.",
+    formula:"Neon Blueprint + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Neon Blueprint: convierte la mitad derecha de este automóvil en un plano esquemático de neón azul y cian sobre fondo oscuro.",
+    aplica:"Diseño industrial, tecnología, productos de automóvil y gadgets."
+  },
+  {
+    n:8, cat:2, code:"Paperwall",
+    efecto:"Convierte cualquier escena o foto en una composición elaborada íntegramente de papel recortado y capas superpuestas.",
+    formula:"Paperwall + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Paperwall: recrea este paisaje montañoso como un arte de capas de papel recortado con profundidad de sombras.",
+    aplica:"Ilustración editorial, diseño de portadas, proyectos de diseño gráfico."
+  },
+  {
+    n:9, cat:2, code:"Crystal Cap",
+    efecto:"Convierte a cualquier persona u objeto en una escultura hecha de cristal transparente con refracción de luz.",
+    formula:"Crystal Cap + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Crystal Cap: transforma este busto humano en una escultura de cristal tallado transparente que refleja luces de colores.",
+    aplica:"Fotografía artística, diseño de perfumes, joyería y lujo."
+  },
+  {
+    n:10, cat:2, code:"Levitating Parts",
+    efecto:"Separa todas las piezas componentes de un producto y las muestra flotando ordenadamente en el aire.",
+    formula:"Levitating Parts + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Levitating Parts: desglosa una cámara fotográfica mostrando todas sus lentes, botones y circuitos flotando despiezados.",
+    aplica:"Anuncios de productos tecnológicos, e-commerce, presentaciones de ingeniería."
+  },
+
+  /* ---------- CATEGORÍA 3: PORTALES, ESPEJOS Y DIMENSIONES PARALELAS ---------- */
+  {
+    n:11, cat:3, code:"Portal Shot",
+    efecto:"Abre un portal circular u ovalado entre dos escenarios distintos, conectando ambos mundos en una sola imagen.",
+    formula:"Portal Shot + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Portal Shot: crea un portal brillante en mitad del desierto que muestra una selva exuberante al otro lado.",
+    aplica:"Arte conceptual, fotografía surrealista, marketing de viajes."
+  },
+  {
+    n:12, cat:3, code:"Shadow Clone",
+    efecto:"Modifica la sombra de la persona u objeto para que adopte una pose o forma completamente distinta al cuerpo real.",
+    formula:"Shadow Clone + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Shadow Clone: sujeto de pie mirando hacia adelante, pero su sombra proyectada en la pared está levantando los brazos en victoria.",
+    aplica:"Retratos conceptuales, afiches creativos, composición narrativa."
+  },
+  {
+    n:13, cat:3, code:"Dream Portal",
+    efecto:"Transforma una puerta o espejo cotidiano en un portal fantástico iluminado hacia otro mundo surrealista.",
+    formula:"Dream Portal + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Dream Portal: convierte esta puerta de madera antigua en una entrada cósmica con galaxias y luces brillantes.",
+    aplica:"Ilustración de fantasía, diseño de portadas de libros, arte conceptual."
+  },
+  {
+    n:14, cat:3, code:"X-Ray Fashion",
+    efecto:"Muestra las capas internas, costuras y estructura de una prenda de vestir como si se observara con visión de rayos X.",
+    formula:"X-Ray Fashion + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"X-Ray Fashion: muestra una chaqueta deportiva moderna con efecto de rayos X translúcido dejando ver las capas térmicas internas.",
+    aplica:"Moda técnica, publicidad textil, e-commerce de indumentaria."
+  },
+  {
+    n:15, cat:3, code:"Mirror World",
+    efecto:"Crea dos realidades totalmente diferentes reflejadas a cada lado de un espejo o superficie reflectante.",
+    formula:"Mirror World + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Mirror World: un hombre frente a un espejo donde el reflejo muestra una versión futurista de una ciudad cibernética.",
+    aplica:"Storytelling, publicidad de marca, arte conceptual dramático."
+  },
+
+  /* ---------- CATEGORÍA 4: TIEMPO, CLIMA Y PRESENTACIÓN DE PRODUCTO ---------- */
+  {
+    n:16, cat:4, code:"Time Slice",
+    efecto:"Muestra múltiples momentos de un mismo movimiento o instante integrados en una misma composición fotográfica.",
+    formula:"Time Slice + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Time Slice: un corredor de maratón capturado en 5 fases continuas de su zancada dentro de la misma imagen.",
+    aplica:"Fotografía deportiva, secuencias de movimiento, anuncios dinámicos."
+  },
+  {
+    n:17, cat:4, code:"Toy Box",
+    efecto:"Transforma a una persona o figura en un juguete de colección empaquetado dentro de su propia caja transparente.",
+    formula:"Toy Box + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Toy Box: convierte esta foto mía en un muñeco coleccionable en su empaque retro con accesorios personalizados.",
+    aplica:"Branding personal, regalos creativos, contenido para redes sociales."
+  },
+  {
+    n:18, cat:4, code:"Hologram",
+    efecto:"Coloca un producto en un anuncio holográfico de escala gigante proyectado en el centro de la ciudad.",
+    formula:"Hologram + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Hologram: proyecta zapatillas deportivas como un holograma tridimensional gigante sobre un rascacielos nocturno.",
+    aplica:"Lanzamiento de nuevos productos, marcas de lujo, campañas tecnológicas."
+  },
+  {
+    n:19, cat:4, code:"Weather Flip",
+    efecto:"Divide una misma escena exactamente por la mitad mostrando dos climas o estaciones opuestas.",
+    formula:"Weather Flip + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Weather Flip: un parque urbano dividido por la mitad; el lado izquierdo en pleno verano soleado y el derecho cubierto de nieve invernal.",
+    aplica:"Campañas estacionales, concientización climática, composición artística."
+  },
+  {
+    n:20, cat:4, code:"Future Past",
+    efecto:"Muestra en la misma imagen el aspecto de una persona u objeto en el pasado y en su versión del futuro.",
+    formula:"Future Past + [Sujeto / Foto de origen] + [Detalles de la escena]",
+    ejemplo:"Future Past: un vehículo clásico de los años 1950 fusionado con su versión voladora y futurista del año 2080.",
+    aplica:"Evolución de marca, narrativa temporal, anuncios retrospectivos."
+  }
+];
+
+const CATS = {
+  1:{ kicker:"Categoría 1", title:"Escalas y perspectivas extremas" },
+  2:{ kicker:"Categoría 2", title:"Transformaciones de materia y estructura" },
+  3:{ kicker:"Categoría 3", title:"Portales, espejos y dimensiones paralelas" },
+  4:{ kicker:"Categoría 4", title:"Tiempo, clima y presentación de producto" }
+};
+
+/* ============================================================
+   2. UTILIDADES
+   ============================================================ */
+const esc = (s) => String(s)
+  .replace(/&/g,'&amp;')
+  .replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;')
+  .replace(/"/g,'&quot;');
+
+const pad2 = (n) => String(n).padStart(2,'0');
+
+/* ============================================================
+   3. RENDER DE TARJETAS Y CATEGORÍAS
+   ============================================================ */
+function cardHTML(d){
+  const search = [d.code, d.efecto, d.formula, d.ejemplo, d.aplica].join(' ').toLowerCase();
+  return `
+    <article class="card" data-search="${esc(search)}">
+      <div class="card-top">
+        <span class="num">#${pad2(d.n)}</span>
+        <h3>${esc(d.code)}</h3>
+      </div>
+      <p class="efecto">${esc(d.efecto)}</p>
+      <div class="field">
+        <span class="label">Fórmula del prompt</span>
+        <code class="formula">${esc(d.formula)}</code>
+      </div>
+      <blockquote class="ejemplo">${esc(d.ejemplo)}</blockquote>
+      <div class="aplica">
+        <span class="label">Aplica mejor en</span>
+        ${esc(d.aplica)}
+      </div>
+    </article>`;
+}
+
+function buildContent(){
+  let html = '';
+  [1,2,3,4].forEach(cid => {
+    const items = DATA.filter(d => d.cat === cid);
+    html += `
+      <section class="cat" data-cat="${cid}" id="cat-${cid}">
+        <div class="cat-head">
+          <span class="cat-num">${pad2(cid)}</span>
+          <div>
+            <div class="cat-kicker">${CATS[cid].kicker}</div>
+            <h2>${CATS[cid].title}</h2>
+          </div>
+        </div>
+        <div class="grid">${items.map(cardHTML).join('')}</div>
+      </section>`;
+  });
+  document.getElementById('content').innerHTML = html;
+}
+
+function buildTable(){
+  document.getElementById('ref-body').innerHTML = DATA.map(d => `
+    <tr>
+      <td class="tnum">${d.n}</td>
+      <td class="tcode">${esc(d.code)}</td>
+      <td>${esc(d.efecto)}</td>
+      <td>${esc(d.aplica)}</td>
+    </tr>`).join('');
+}
+
+/* ============================================================
+   4. FILTROS (BÚSQUEDA + CATEGORÍA)
+   ============================================================ */
+const state = { q:'', cat:'all' };
+
+function applyFilter(){
+  const totalCards = document.querySelectorAll('.card').length;
+  let total = 0;
+
+  document.querySelectorAll('.cat').forEach(sec => {
+    const cid = sec.dataset.cat;
+    let visible = 0;
+
+    sec.querySelectorAll('.card').forEach(card => {
+      const okCat  = state.cat === 'all' || state.cat === cid;
+      const okText = !state.q || card.dataset.search.includes(state.q);
+      const show   = okCat && okText;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    sec.style.display = visible ? '' : 'none';
+    total += visible;
+  });
+
+  document.getElementById('empty').classList.toggle('hidden', total > 0 || totalCards === 0);
+}
+
+function resetFilters(){
+  state.q = '';
+  state.cat = 'all';
+  const input = document.getElementById('q');
+  if (input) input.value = '';
+  document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.cat === 'all'));
+  applyFilter();
+}
+
+/* ============================================================
+   5. MENÚ HAMBURGUESA + NAVEGACIÓN
+   ============================================================ */
+function initMenu(){
+  const drawer    = document.getElementById('drawer');
+  const overlay   = document.getElementById('overlay');
+  const burger    = document.getElementById('burger');
+  const closeBtn  = document.getElementById('drawerClose');
+
+  const isOpen = () => drawer.classList.contains('open');
+
+  function openDrawer(){
+    drawer.classList.add('open');
+    overlay.classList.add('show');
+    drawer.setAttribute('aria-hidden','false');
+    burger.setAttribute('aria-expanded','true');
+    burger.setAttribute('aria-label','Cerrar menú de navegación');
+    document.body.classList.add('no-scroll');
+    // Foco accesible en el primer enlace
+    const first = drawer.querySelector('.nav-link');
+    if (first) setTimeout(() => first.focus({ preventScroll:true }), 120);
+  }
+
+  function closeDrawer(restoreFocus){
+    drawer.classList.remove('open');
+    overlay.classList.remove('show');
+    drawer.setAttribute('aria-hidden','true');
+    burger.setAttribute('aria-expanded','false');
+    burger.setAttribute('aria-label','Abrir menú de navegación');
+    document.body.classList.remove('no-scroll');
+    if (restoreFocus) burger.focus({ preventScroll:true });
+  }
+
+  burger.addEventListener('click', () => isOpen() ? closeDrawer(true) : openDrawer());
+  closeBtn.addEventListener('click', () => closeDrawer(true));
+  overlay.addEventListener('click', () => closeDrawer(true));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen()) closeDrawer(true);
+  });
+
+  /* --- Navegación por los enlaces del menú --- */
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const hash = link.getAttribute('href');
+      const target = document.querySelector(hash);
+
+      // Cerramos el menú y restauramos el filtrado para que el destino exista
+      closeDrawer(false);
+      resetFilters();
+
+      if (target){
+        setTimeout(() => {
+          target.scrollIntoView({ behavior:'smooth', block:'start' });
+          history.replaceState(null, '', hash);
+        }, 80);
+      }
+    });
+  });
+
+  /* --- Resaltado automático de la sección activa (scroll spy) --- */
+  const sections = Array.from(document.querySelectorAll('[id]')).filter(el =>
+    el.id === 'inicio' || el.id === 'como-funciona' || el.id === 'referencia' || /^cat-\d$/.test(el.id)
+  );
+
+  function setActive(id){
+    document.querySelectorAll('.nav-link').forEach(l => {
+      const on = l.getAttribute('href') === '#' + id;
+      l.classList.toggle('active', on);
+      if (on) l.setAttribute('aria-current','true');
+      else l.removeAttribute('aria-current');
+    });
+  }
+
+  if ('IntersectionObserver' in window){
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    }, { rootMargin:'-45% 0px -50% 0px', threshold:0 });
+
+    sections.forEach(s => obs.observe(s));
+  }
+
+  // Estado inicial
+  setActive('inicio');
+}
+
+/* ============================================================
+   6. TOOLBAR: BUSCADOR, CHIPS, TEMA Y VOLVER ARRIBA
+   ============================================================ */
+function initToolbar(){
+  /* ---- Buscador ---- */
+  const input = document.getElementById('q');
+  input.addEventListener('input', () => {
+    state.q = input.value.toLowerCase().trim();
+    applyFilter();
+  });
+
+  /* ---- Chips de categoría ---- */
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      state.cat = chip.dataset.cat;
+      applyFilter();
+    });
+  });
+
+  /* ---- Tema claro / oscuro ---- */
+  const themeBtn = document.getElementById('theme');
+  const root = document.documentElement;
+  themeBtn.addEventListener('click', () => {
+    const isLight = root.dataset.theme === 'light';
+    root.dataset.theme = isLight ? 'dark' : 'light';
+    themeBtn.textContent = isLight ? '🌙' : '☀️';
+    themeBtn.setAttribute('aria-label', isLight ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro');
+  });
+
+  /* ---- Botón volver arriba ---- */
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', () => {
+    toTop.classList.toggle('show', window.scrollY > 620);
+  }, { passive:true });
+
+  toTop.addEventListener('click', () => {
+    window.scrollTo({ top:0, behavior:'smooth' });
+  });
+}
+
+/* ============================================================
+   7. INICIO
+   ============================================================ */
+buildContent();
+buildTable();
+initToolbar();
+initMenu();
+applyFilter();
+</script>
+</body>
+</html>
